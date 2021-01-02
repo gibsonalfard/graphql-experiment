@@ -28,6 +28,8 @@ app.use("/api/query", graphqlHTTP({
     schema, graphiql: true
 }));
 
+// Create Normal End-Point
+
 /*Make server listen to some port.
 8080 -> Default when no port defined at env variable
 * */

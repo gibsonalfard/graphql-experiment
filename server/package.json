@@ -1,0 +1,32 @@
+{
+  "name": "graphql-experiment",
+  "version": "1.0.0",
+  "description": "Node.js project for GraphQL end-point",
+  "main": "app.js",
+  "scripts": {
+    "start": "node app.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/gibsonalfard/graphql-experiment.git"
+  },
+  "keywords": [
+    "graphql"
+  ],
+  "author": "Ilham Gibran Achmad Mudzakir",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/gibsonalfard/graphql-experiment/issues"
+  },
+  "homepage": "https://github.com/gibsonalfard/graphql-experiment#readme",
+  "dependencies": {
+    "axios": "^0.21.1",
+    "body-parser": "^1.19.0",
+    "cors": "^2.8.5",
+    "express": "^4.17.1",
+    "express-graphql": "^0.12.0",
+    "graphql": "^15.4.0",
+    "mongoose": "^5.11.9",
+    "pg": "^8.5.1"
+  }
+}
