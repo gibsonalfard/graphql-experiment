@@ -35,7 +35,6 @@ app.get("/", (req, res) => {
                 movies {
                     id,
                     title,
-                    genre,
                     rating,
                     director,
                     year

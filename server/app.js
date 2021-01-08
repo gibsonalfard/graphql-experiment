@@ -3,6 +3,7 @@ const graphqlHTTP = require("express-graphql").graphqlHTTP;
 const cors = require("cors");
 const http = require("http");
 const schema = require("./schema/schema");
+const { postgres } = require("./config/dbconfig");
 
 const app = express();
 
@@ -29,6 +30,12 @@ app.use("/api/query", graphqlHTTP({
 }));
 
 // Create Normal End-Point
+app.get("/", (req, res) => {
+    postgres.query("SELECT * FROM movies", (err, res) => {
+        console.log(res.rows);
+    });
+    res.json({"message": "200"});
+});
 
 /*Make server listen to some port.
 8080 -> Default when no port defined at env variable

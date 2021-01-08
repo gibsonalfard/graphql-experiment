@@ -1,10 +1,14 @@
+const {getData} = require("../config/dbconfig");
+const Movies = require("../controllers/MoviesController");
+const Director = require("../controllers/DirectorController");
+const GraphQLDate = require("./types/Date");
 const graphql = require("graphql");
 const {
     GraphQLObjectType,
     GraphQLSchema,
     GraphQLID,
-    GraphQLString,
     GraphQLList,
+    GraphQLString,
     GraphQLFloat
 } = graphql;
 
@@ -16,34 +20,38 @@ let movies = [
     {id: 5, title: "Let Me Eat Your Pancreas", rating: 7.1, director: "Sho Tsukikawa", year: "2017", genre:["Romance", "Drama"]},
 ];
 
-const getMovie = (args) => {
-    let film = null;
-    movies.some(movie => {
-        if(args === movie.id){
-            film = Object.create(movie);
-        }
-    });
-
-    return film;
-}
-
-const getAllMovies = () => {
-    return movies;
-}
-
 /* Create GraphQL Schema object --- Start
 Note : All fields you want to share have to define in Object Schema. It's possible to not share some fields
 using GraphQL, but all fields that not defined in schema cannot be accessed by client
 */
+const DirectorObject = new GraphQLObjectType({
+    name: "Director",
+    fields: () => ({
+        id: {type: GraphQLID},
+        name: {type: GraphQLString},
+        born: {type: GraphQLDate},
+        movies: {
+            type: new GraphQLList(MovieObject),
+            async resolve(parent, args){
+                let data = await Movies.getMovieBy("directorid", parent.id);
+                return data;
+            }
+        }
+    }),
+});
 const MovieObject = new GraphQLObjectType({
     name: "Movie",
     fields: () => ({
         id: {type: GraphQLID},
         title: {type: GraphQLString},
         rating: {type: GraphQLFloat},
-        director: {type: GraphQLString},
+        director: {
+            type: DirectorObject,
+            async resolve(parent, args) {
+                return await Director.getDirector(parent.directorid);
+            }
+        },
         year: {type: GraphQLString},
-        genre: {type: new GraphQLList(GraphQLString)} // Create List of String
     }),
 });
 /* Create GraphQL Schema object --- End */
@@ -55,14 +63,27 @@ const RootQuery = new GraphQLObjectType({
         movie:{
             type: MovieObject,
             args: {id: {type: GraphQLID}},
-            resolve(parent, args){
-                return getMovie(args.id);
+            async resolve(parent, args){
+                return await Movies.getMovie(args.id);
             }
         },
         movies:{
             type: new GraphQLList(MovieObject),
-            resolve() {
-                return getAllMovies();
+            async resolve() {
+                return await Movies.getAllMovies();
+            }
+        },
+        director:{
+            type: DirectorObject,
+            args: {id: {type: GraphQLID}},
+            async resolve(parent, args){
+                return await Director.getDirector(args.id);
+            }
+        },
+        directors:{
+            type: new GraphQLList(DirectorObject),
+            async resolve() {
+                return await Director.getAllDirector();
             }
         }
     }
